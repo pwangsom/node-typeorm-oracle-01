@@ -17,7 +17,7 @@ To create a new project using CLI, run the following command:
 ### Create environment file
 Please create **.env** file in the root folder and please insert the following environment variables.
 
-##### ORACLE_HOST = Host IP Address
-##### ORACLE_SERVICE = Oracle Service Name
-##### ORACLE_USER = Username
-##### ORACLE_PWD = Password
+`ORACLE_HOST = Host IP Address`
+`ORACLE_SERVICE = Oracle Service Name`
+`ORACLE_USER = Username`
+`ORACLE_PWD = Password`
