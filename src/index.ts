@@ -1,39 +1,33 @@
-import { OracleDS } from "./data-source"
-import { AdminUser } from "./entity/AdminUser"
+import "log-timestamp"
+import express from "express";
 
+import defaultRouter from "./routes/defaultRoute";
+import adminRouter from "./routes/adminUserRoute";
 
-OracleDS.initialize().then(async () => {
+process.env.TZ = "Asia/Bangkok";
+console.log(new Date().toString());
 
-    /*
-	console.log("Inserting a new admin user into the database...")
-    const adminUser = new AdminUser()
-    adminUser.userName = "pwangsom.cmu"
-    adminUser.firstName = "Peter"
-    adminUser.lastName = "Cmu"
-    await OracleDS.manager.save(adminUser)
-    console.log("Saved a new admin user with id: " + adminUser.id) 
-    */
+const app = express();
 
-    // Using Entity Manager
-    const firstAllAdminUsers = await OracleDS.manager.find(AdminUser);
-    console.log("Using Entity Manager: all admin users from the db: ", firstAllAdminUsers);
+// Common Middlewares
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-    const firstAdminUser = await OracleDS.manager.findOneBy(AdminUser, {
-        userName: "pwangsom.cmu"
-    })
-    console.log("Using Entity Manager: find one admin user: ", firstAdminUser);    
+var logger = function TimestampLog(req, res, next){
+    console.log(req.originalUrl);
+    next();
+}
 
-    // Using Repositories
-    const adminUserRespository = OracleDS.getRepository(AdminUser);
+app.use(logger);
 
-    const secondAllAdminUsers = await adminUserRespository.find();
-    console.log("Using Repositories: all admin users from the db: ", secondAllAdminUsers);
+// Import Data Sourcess
+import OracleDS from "./data-source";
+OracleDS;
 
-    const secondAdminUser = await adminUserRespository.findOneBy({ userName: "peerasak.w" });
-    console.log("Using Repositories: find one admin user: ", secondAdminUser);    
+// Import Routers
+app.use('/', defaultRouter);
+app.use('/admin', adminRouter);
 
-    console.log("Here you can setup and run express / fastify / any other framework.")
-
-}).catch(error => console.log(error))
-
-
+// Port
+const port = process.env.PORT || 3100;
+app.listen(port, () => console.log(`Server running is on ${port}...`));
